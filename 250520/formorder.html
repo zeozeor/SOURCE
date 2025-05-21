@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>상품정보</title>
+  <style>
+    *{ margin: 0; padding: 0; }
+    form{
+      width: 500px;
+      margin: 100px auto;
+    }
+    fieldset{
+      padding: 20px 30px;
+      margin-bottom: 40px;
+    }
+    legend{
+      font-size: 1.5rem;
+      font-weight: bolder;
+    }
+    fieldset > div{
+      margin: 20px 0;
+      display: flex;
+    }
+    label{
+      width: 60px;
+    }
+    input{
+      flex: 1;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+      padding: 5px;
+    }
+    button{
+      width: 100%;
+      text-align: center;
+      padding: 10px 0;
+      font-weight: bolder;
+    }
+    #popup{
+      background-color: rgba(0,0,0,0.6);
+      width: 100%;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: none;
+    }
+    #popup.open{          /*팝업을 열었을 때 디스플레이를 블록처리(보이게 함)*/
+      display: block;
+    }
+    #popup > ul.view-list{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      background-color: #eee;
+      width: 500px;
+      height: 500px;
+      border-radius: 10px;
+      list-style: none;
+      padding: 2rem;
+      box-sizing: border-box;   /* 패딩값을 줘도 컨텐츠 박스 크기를 고정시킴 : box-sizing */
+    }
+    #popup > ul > li{
+      margin-bottom: 1rem;
+    }
+    #popup > .close{
+      width: 100px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%,-50%) translateY(-280px);
+      z-index: 10;
+      background-color: #222;
+      color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <form name="order">
+    <fieldset>
+      <legend>상품 정보</legend>
+      <div>
+        <label for="product">상품 : </label>
+        <input type="text" id="product" autocomplete="off"> <!--autocomplete 자동완성 기능-->
+      </div>
+      <div>
+        <label for="prod-num">갯수 : </label>
+        <input type="number" id="prod-num" value="1" min="1" max="10">   <!-- 기본 값 표기 value 사용. min=가장 작은 값 사용 -->
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>주문 정보</legend>
+      <div>
+        <label for="order-name">이름 : </label>
+        <input type="text" id="order-name">
+      </div>
+      <div>
+        <label for="order-phone">연락처 : </label>
+        <input type="text" id="order-phone">
+      </div>
+      <div>
+        <label for="order-addr">주소 : </label>
+        <input type="text" id="order-addr">
+      </div>
+    </fieldset>
+    <button type="submit">주문하기</button>
+  </form>
+  <div id="popup">
+    <button class="close">닫기</button>
+    <ul class="view-list">
+    </ul>
+  </div>
+  <script>
+    // 변수 선언
+    const $form = document.querySelector("form[name=order]");
+    const $inputAll = $form.querySelectorAll("input");  //input 요소
+    const $popup = document.querySelector("#popup");    //popup 요소 가져오기
+    const $ul = $popup.querySelector("ul");   // ul 요소
+    const $closeBtn = $popup.querySelector(".close");   // 팝업 닫기 버튼 요소
+
+    // autocomplete off 설정 다중적용 하기
+    $inputAll.forEach((input)=>{
+      // input.autocomplete = "off";  // 적용 활용(1)
+      input.setAttribute("autocomplete","off"); // 적용 활용(2) set: 설정, get: 가져옴
+      console.log( input.getAttribute("autocomplete") );
+    });
+
+    /***
+    /* submit : 버튼에서 일어나는 이벤트가 아님.
+                ★ form에서만 일어나는 이벤트 ★
+                데이터를 전송시키고 form 안의 input을 초기화 시킴.
+    /* form 객체 가져오기
+    */
+
+    // ul 아래에 li들을 생성해서 추가 ★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆-★☆
+
+      // li 요소 생성
+
+      // 상품: 사용자가 입력한 상품명 <li>상품 : 연필(사용자가 입력한 정보)</li>
+      // let value = document.querySelector("#product").value;
+      // elem.textContent = `상품: ${value}`;
+      // console.log( elem );
+    const createItem = ()=>{
+      $ul.innerHTML='';   //입력된 정보를 저장하지 않고 입력한 값만 노출. 이전 출력값은 삭제
+      $inputAll.forEach((elem)=>{
+      const $li = document.createElement("li");    // <li></li> 생성
+        //이전에 만들어진 label:textContent 값 가져오기
+        const $prev = elem.previousElementSibling;
+        $li.textContent = `${$prev.textContent} ${elem.value}`;
+        $ul.appendChild($li);
+      });
+    }
+    // popup 닫기 버튼을 클릭하면 팝업이 안보이게 처리
+    $closeBtn.addEventListener("click",()=>{
+      // open 클래스 삭제
+      $popup.classList.remove("open");
+    });
+
+    $form.addEventListener("submit",(event)=>{
+      event.preventDefault(); // ★ preventDefault() ★ = 이미 만들어진 기능을 초기화
+      // console.log( "submit 이벤트 발생" );
+      // submit 이 이미 활성화 되어있으므로 주문하기 버튼 객체는 가져오지 않아도 됨
+      $popup.classList.add("open");
+      createItem();
+    });
+    
+  </script>
+</body>
+</html>

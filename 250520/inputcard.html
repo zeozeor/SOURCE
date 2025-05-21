@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CreateElement 연습</title>
+  <style>
+    *{ margin: 0; padding: 0;}
+    h1{
+      text-align: center;
+      margin: 1rem;
+    }
+    #userForm, .container>.item{
+      width: 500px;
+      margin: 2rem auto;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    #userForm > input{
+      width: 100%;
+    }
+    #userForm > button{
+      width: 100px;
+    }
+    .container>.item>span{
+      width: 100%;
+    }
+    .container>.item>button{
+      width: 100%;
+      background-color: tomato;
+      border: none;
+      color: #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>createElement 연습</h1>
+  <form id="userForm">
+    <input type="text" placeholder="이름입력" id="inputName" required> <!-- required : 필수 입력-->
+    <input type="number" placeholder="나이입력" id="inputAge" required>
+    <!-- <input type="submit"> 아래의 버튼 요소와 같음 -->
+    <button type="submit">추가</button>
+  </form>
+  <div class="container">
+    <!-- <div class="item">
+      <span>김삼순(40세)</span>
+      <button>삭제</button>
+    </div> -->
+  </div>
+  <script src="./inputcard.js"></script>
+</body>
+</html>
